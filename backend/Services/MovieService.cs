@@ -100,14 +100,14 @@ namespace Live_Movies.Services
             await _context.SaveChangesAsync();
 
             //Handle Genres
-            foreach (var genreName in movieDto.Genre)
+            foreach (var genreName in movieDto.Genre ?? new List<string>())
             {
                 var genre = await GetOrCreateGenreAsync(genreName.Trim());
                 _context.MovieGenres.Add(new MovieGenre { MovieId = movie.id, GenreId = genre.Id });
             }
 
             // Handle Cast Member
-            foreach (var castName in movieDto.Cast)
+            foreach (var castName in movieDto.Cast ?? new List<string>())
             {
                 var castMember = await GetOrCreateCastMemberAsync(castName.Trim());
                 _context.MovieCasts.Add(new MovieCast { MovieId = movie.id, CastMemberId = castMember.Id });
@@ -144,7 +144,7 @@ namespace Live_Movies.Services
             // Update Genres
             _context.MovieGenres.RemoveRange(movie.MovieGenres);
 
-            foreach (var genreName in movieDto.Genre)
+            foreach (var genreName in movieDto.Genre ?? new List<string>())
             {
                 var genre = await GetOrCreateGenreAsync(genreName.Trim());
                 _context.MovieGenres.Add(new MovieGenre { MovieId = movie.id, GenreId = genre.Id });
@@ -153,7 +153,7 @@ namespace Live_Movies.Services
             //Update Cast Members
             _context.MovieCasts.RemoveRange(movie.MovieCasts); // ADD THIS LINE to remove existing cast
 
-            foreach (var castName in movieDto.Cast)
+            foreach (var castName in movieDto.Cast ?? new List<string>())
             {
                 var castMember = await GetOrCreateCastMemberAsync(castName.Trim());
                 _context.MovieCasts.Add(new MovieCast { MovieId = movie.id, CastMemberId = castMember.Id });

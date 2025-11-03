@@ -48,7 +48,8 @@ if (builder.Environment.IsProduction())
         {
             npgOptions.EnableRetryOnFailure(
                 maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30)
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorCodesToAdd: null
             );
         }));
 }
@@ -93,6 +94,16 @@ builder.Services.AddCors(options =>
 builder.Services.AddLogging();
 
 var app = builder.Build();
+
+// Ensure uploads directory exists for development
+if (app.Environment.IsDevelopment())
+{
+    var uploadsPath = Path.Combine(app.Environment.ContentRootPath, "uploads", "movies");
+    if (!Directory.Exists(uploadsPath))
+    {
+        Directory.CreateDirectory(uploadsPath);
+    }
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
