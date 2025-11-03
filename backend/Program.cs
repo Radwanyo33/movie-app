@@ -93,6 +93,11 @@ builder.Services.AddCors(options =>
 // Logging
 builder.Services.AddLogging();
 
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.UseUrls("http://0.0.0.0:8080");
+}
+
 var app = builder.Build();
 
 // Ensure uploads directory exists for development
