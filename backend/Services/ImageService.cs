@@ -35,18 +35,18 @@ namespace Live_Movies.Services
             if (string.IsNullOrEmpty(extension) || !_allowedExtensions.Contains(extension))
                 throw new ArgumentException("Invalid file type. Allowed types: " + string.Join(", ", _allowedExtensions));
 
-            // Determine upload path based on environment
             string uploadsFolder;
             if (_environment.IsProduction())
             {
-                // In production, use Render's disk
-                uploadsFolder = Path.Combine("/opt/render/project/src/backend/uploads", "movies");
+                // In Docker container, use /app/uploads
+                uploadsFolder = Path.Combine("/app", "uploads", "movies");
             }
             else
             {
-                // In development, use wwwroot (your existing flow)
+                // In development, use wwwroot
                 uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "movies");
             }
+
 
             // Create uploads folder if it doesn't exist
             if (!Directory.Exists(uploadsFolder))
