@@ -154,11 +154,13 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<MovieDbContext>();
-        // Apply Database Migration
+        
+        // Apply migrations without model validation
         await context.Database.MigrateAsync();
-        // Additional seeding
+        
+        // Seed data
         await SeedData.Initialize(services);
-
+        
         Console.WriteLine("Database migrated and seeded successfully.");
     }
     catch (Exception ex)
