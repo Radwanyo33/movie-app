@@ -178,7 +178,7 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<MovieDbContext>();
         
-        // Try to apply migrations - continue even if it fails
+        // Try to apply migrations
         try 
         {
             await context.Database.MigrateAsync();
@@ -186,16 +186,20 @@ using (var scope = app.Services.CreateScope())
         }
         catch (Exception migrateEx)
         {
-            // Log but continue - the app might still work
+            // If migrations fail, try to ensure database is created
             var logger = services.GetRequiredService<ILogger<Program>>();
-            logger.LogWarning(migrateEx, "Database migration failed, but continuing application startup");
+            logger.LogWarning(migrateEx, "Database migration failed, trying to ensure database is created...");
+            
+            // Force database creation
+            await context.Database.EnsureCreatedAsync();
+            Console.WriteLine("Database ensured created (tables may not match model).");
         }
         
         // Try to seed data - continue even if it fails
         try 
         {
-            //await SeedData.Initialize(services);
-            Console.WriteLine("Database seeding temporarily disabled for PostgreSQL.");
+            // await SeedData.Initialize(services);  // Keep this commented for now
+            Console.WriteLine("Database seeding temporarily disabled.");
         }
         catch (Exception seedEx)
         {
@@ -207,7 +211,6 @@ using (var scope = app.Services.CreateScope())
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
         logger.LogError(ex, "An unexpected error occurred during database setup");
-        // Don't re-throw - let the app continue starting
     }
 }
 
