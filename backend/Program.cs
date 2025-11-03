@@ -7,6 +7,12 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
+if (builder.Environment.IsProduction())
+{
+    builder.WebHost.UseUrls("http://0.0.0.0:8080");
+}
+
+
 // Add session services
 builder.Services.AddDistributedMemoryCache(); // Or use Redis for production
 builder.Services.AddSession(options =>
@@ -93,10 +99,6 @@ builder.Services.AddCors(options =>
 // Logging
 builder.Services.AddLogging();
 
-if (builder.Environment.IsProduction())
-{
-    builder.WebHost.UseUrls("http://0.0.0.0:8080");
-}
 
 var app = builder.Build();
 
