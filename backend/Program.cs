@@ -119,7 +119,10 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
 
 // CORS must be before UseAuthorization and MapControllers
 app.UseCors("AllowReactApp");
