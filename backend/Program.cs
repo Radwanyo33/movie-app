@@ -136,17 +136,27 @@ app.UseCors("AllowReactApp");
 app.UseStaticFiles(); // This serves wwwroot folder
 
 // Static files for uploads directory - for production
-app.UseStaticFiles(new StaticFileOptions
+try 
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.ContentRootPath, "uploads")),
-    RequestPath = "/uploads",
-    OnPrepareResponse = ctx =>
+    var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+    if (Directory.Exists(uploadsPath) || app.Environment.IsDevelopment())
     {
-        // Cache static files for 1 hour
-        ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(uploadsPath),
+            RequestPath = "/uploads",
+            OnPrepareResponse = ctx =>
+            {
+                ctx.Context.Response.Headers.Append("Cache-Control", "public,max-age=3600");
+            }
+        });
     }
-});
+}
+catch (Exception ex)
+{
+    var logger = app.Logger;
+    logger.LogWarning(ex, "Failed to configure uploads static files");
+}
 
 app.UseSession();
 app.UseAuthorization();
@@ -160,18 +170,36 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<MovieDbContext>();
         
-        // Apply migrations without model validation
-        await context.Database.MigrateAsync();
+        // Try to apply migrations - continue even if it fails
+        try 
+        {
+            await context.Database.MigrateAsync();
+            Console.WriteLine("Database migrations applied successfully.");
+        }
+        catch (Exception migrateEx)
+        {
+            // Log but continue - the app might still work
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning(migrateEx, "Database migration failed, but continuing application startup");
+        }
         
-        // Seed data
-        await SeedData.Initialize(services);
-        
-        Console.WriteLine("Database migrated and seeded successfully.");
+        // Try to seed data - continue even if it fails
+        try 
+        {
+            await SeedData.Initialize(services);
+            Console.WriteLine("Database seeded successfully.");
+        }
+        catch (Exception seedEx)
+        {
+            var logger = services.GetRequiredService<ILogger<Program>>();
+            logger.LogWarning(seedEx, "Database seeding failed, but continuing application startup");
+        }
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An Error occurred while seeding or migrating the Database");
+        logger.LogError(ex, "An unexpected error occurred during database setup");
+        // Don't re-throw - let the app continue starting
     }
 }
 
