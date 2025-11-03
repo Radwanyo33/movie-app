@@ -9,6 +9,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 if (builder.Environment.IsProduction())
 {
+    builder.WebHost.ConfigureKestrel(serverOptions =>
+    {
+        serverOptions.ListenAnyIP(8080);
+    });
+    
+    // Also keep the UseUrls as backup
     builder.WebHost.UseUrls("http://0.0.0.0:8080");
 }
 
@@ -188,8 +194,8 @@ using (var scope = app.Services.CreateScope())
         // Try to seed data - continue even if it fails
         try 
         {
-            await SeedData.Initialize(services);
-            Console.WriteLine("Database seeded successfully.");
+            //await SeedData.Initialize(services);
+            Console.WriteLine("Database seeding temporarily disabled for PostgreSQL.");
         }
         catch (Exception seedEx)
         {
