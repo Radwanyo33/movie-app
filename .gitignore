@@ -1,0 +1,39 @@
+# .NET
+**/bin/
+**/obj/
+**/.vs/
+**/launchSettings.json
+*.user
+*.suo
+
+# React
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Environment files
+.env
+.env.local
+.env.production
+appsettings.Development.json
+
+# Database
+*.db
+*.mdf
+*.ldf
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Uploads (development only - production will handle differently)
+backend/uploads/
+wwwroot/uploads/

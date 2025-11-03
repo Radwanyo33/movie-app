@@ -1,0 +1,97 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #281a1a, #1a0f0f);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 2px solid #ffcc00;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+    color: white;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #ffcc00;
+    font-size: 2rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.close-button:hover {
+    color: #e6b800;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #ffcc00;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #444;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #ffcc00;
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.login-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #ffcc00;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #e6b800;
+}
+
+.error-message {
+    color: #ff6b6b;
+    text-align: center;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    background-color: rgba(255, 107, 107, 0.1);
+    border-radius: 5px;
+}

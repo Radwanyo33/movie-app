@@ -1,0 +1,178 @@
+.app-header {
+background: linear-gradient(135deg, #1a0f0f, #281a1a);
+border-bottom: 3px solid #ffcc00;
+padding: 1rem 0;
+position: sticky;
+top: 0;
+z-index: 1000;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+max-width: 142rem;
+margin: 0 auto;
+padding: 0 2.4rem;
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 2rem;
+}
+
+.nav-brand {
+flex-shrink: 0;
+}
+
+.app-title {
+color: #ffcc00;
+margin: 0;
+font-size: 2.5rem;
+font-weight: bold;
+text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+letter-spacing: 1px;
+}
+
+.nav-search {
+flex: 1;
+max-width: 600px;
+margin: 0 2rem;
+}
+
+.search-container {
+display: flex;
+gap: 10px;
+align-items: center;
+width: 100%;
+}
+
+.search-input {
+flex: 1;
+padding: 12px 20px;
+border: 2px solid #ffcc00;
+border-radius: 25px;
+background-color: rgba(255, 255, 255, 0.1);
+color: white;
+font-size: 1rem;
+outline: none;
+transition: all 0.3s ease;
+backdrop-filter: blur(10px);
+}
+
+.search-input:focus {
+box-shadow: 0 0 15px rgba(255, 204, 0, 0.4);
+background-color: rgba(255, 255, 255, 0.15);
+border-color: #e6b800;
+}
+
+.search-input::placeholder {
+color: #ccc;
+}
+
+.search-button {
+background-color: #ffcc00;
+color: black;
+border: none;
+padding: 12px 24px;
+border-radius: 25px;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+white-space: nowrap;
+min-width: 100px;
+}
+
+.search-button:hover {
+background-color: #e6b800;
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+}
+
+.nav-actions {
+flex-shrink: 0;
+}
+
+.add-movie-button,
+.login-header-button {
+background-color: #ffcc00;
+color: black;
+border: none;
+padding: 12px 24px;
+border-radius: 25px;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+white-space: nowrap;
+}
+
+.add-movie-button:hover,
+.login-header-button:hover {
+background-color: #e6b800;
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(255, 204, 0, 0.3);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+.navbar {
+flex-direction: column;
+gap: 1rem;
+padding: 0 1rem;
+}
+
+text
+.nav-search {
+    margin: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+.search-container {
+    width: 100%;
+}
+
+.app-title {
+    font-size: 2rem;
+}
+}
+
+@media (max-width: 768px) {
+.navbar {
+padding: 0 0.5rem;
+}
+
+text
+.search-container {
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.search-button {
+    width: 100%;
+}
+
+.app-title {
+    font-size: 1.8rem;
+}
+
+.add-movie-button,
+.login-header-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+}
+
+@media (max-width: 480px) {
+.app-title {
+font-size: 1.5rem;
+}
+
+text
+.search-input {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+}
+
+.search-button {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+}
+}
