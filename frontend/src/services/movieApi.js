@@ -129,8 +129,8 @@ export const getImageUrl = (imagePath) => {
   }
   
   if (imagePath.startsWith('/uploads/')) {
-    const baseUrl = process.env.NODE_ENV === 'production'
-      ? 'https://movie-app-backend.onrender.com'
+    const baseUrl = import.meta.env.PROD === 'production'
+      ? 'https://lmdb-movies.onrender.com'
       : 'http://localhost:5000';
     return `${baseUrl}${imagePath}`;
   }
