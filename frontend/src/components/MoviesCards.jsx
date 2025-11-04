@@ -1,6 +1,7 @@
 import { getImageUrl } from '../services/movieApi'; 
 import { useState } from 'react';
 import { movieApi } from '../services/movieApi';
+import './MoviesCards.css';
 
 export const MoviesCards = ({ data, isAdmin, onEdit, onDelete }) => {
     const {

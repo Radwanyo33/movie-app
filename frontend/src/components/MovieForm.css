@@ -112,3 +112,64 @@
 .submit-button:hover {
     background-color: #e6b800;
 }
+
+/* Mobile Responsive Styles for Forms */
+@media (max-width: 768px) {
+  .large-modal {
+    max-width: 95%;
+    max-height: 95vh;
+    margin: 10px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+  
+  .modal-content {
+    padding: 1.5rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+  
+  .array-input {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .array-input button {
+    width: 100%;
+  }
+  
+  .submit-button {
+    padding: 10px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    padding: 1rem;
+  }
+  
+  .close-button {
+    top: 5px;
+    right: 10px;
+    font-size: 1.5rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+  
+  .submit-button {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
+}
