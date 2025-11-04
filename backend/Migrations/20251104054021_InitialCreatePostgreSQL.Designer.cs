@@ -4,6 +4,7 @@ using Live_Movies.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiveMovies.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    partial class MovieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104054021_InitialCreatePostgreSQL")]
+    partial class InitialCreatePostgreSQL
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -244,7 +247,7 @@ namespace LiveMovies.Migrations
                             CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@movieapp.com",
                             IsActive = true,
-                            PasswordHash = "$2a$11$pbOHwudef1SVI9lDzLaWpuP9i9.rQHedeJKlcg9F.b25J/5iWM13y"
+                            PasswordHash = "$2a$11$3SP2j5HjEzJh.zwymT0Fhumc2kjjJGVL.8hkUyqVkFMpX5Z7ymq3e"
                         });
                 });
 
