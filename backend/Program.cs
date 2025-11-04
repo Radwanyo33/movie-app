@@ -89,7 +89,7 @@ builder.Services.AddScoped<IImageService, ImageService>();
 // For production, use environment variables
 var allowedOrigins = builder.Environment.IsDevelopment()
     ? new[] { "http://localhost:5173", "http://localhost:3000" }
-    : new[] { "https://yourusername.github.io", "https://movie-app-frontend.onrender.com" }; // Added Render frontend URL
+    : new[] { "https://livemovies.onrender.com" }; // Added Render frontend URL
 
 builder.Services.AddCors(options =>
 {

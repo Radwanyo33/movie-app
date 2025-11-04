@@ -1,8 +1,8 @@
 // Dynamic API URL based on environment
 const getApiBaseUrl = () => {
   // In production, use your Render backend URL
-  if (process.env.NODE_ENV === 'production') {
-    return 'https://movie-app-backend.onrender.com/api';
+  if (import.meta.env.PROD) {
+    return 'https://lmdb-movies.onrender.com/api';
   }
   return 'http://localhost:5000/api';
 };
