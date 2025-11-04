@@ -129,7 +129,7 @@ export const getImageUrl = (imagePath) => {
   }
   
   if (imagePath.startsWith('/uploads/')) {
-    const baseUrl = import.meta.env.PROD === 'production'
+    const baseUrl = import.meta.env.PROD
       ? 'https://lmdb-movies.onrender.com'
       : 'http://localhost:5000';
     return `${baseUrl}${imagePath}`;
