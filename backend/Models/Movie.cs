@@ -28,8 +28,6 @@ namespace Live_Movies.Models
 
         [Required]
         public string Rating { get; set; } = string.Empty;
-
-        [Column(TypeName = "nvarchar(max)")]
         public string Description { get; set; } = String.Empty;
 
         [Required]
@@ -45,10 +43,8 @@ namespace Live_Movies.Models
         public virtual ICollection<MovieCast> MovieCasts { get; set; } = new List<MovieCast>();
 
         // NEW: Store genre and cast as JSON for seeded data
-        [Column(TypeName = "nvarchar(max)")]
         public string GenreJson { get; set; } = "[]";
 
-        [Column(TypeName = "nvarchar(max)")]
         public string CastJson { get; set; } = "[]";
 
         // UPDATED: Computed property that works for both cases

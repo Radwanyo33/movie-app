@@ -86,7 +86,8 @@ namespace Live_Movies.Data
                     Email = "admin@movieapp.com",
                     PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin123"),
                     IsActive = true,
-                    CreatedAt = DateTime.UtcNow
+                    //CreatedAt = DateTime.UtcNow
+                    CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc)
                 }
             );
 

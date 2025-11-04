@@ -2,6 +2,7 @@
 using Live_Movies.Models;
 using Live_Movies.Services;
 using System.Text.Json;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Live_Movies.Data
 {
@@ -13,23 +14,24 @@ namespace Live_Movies.Data
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<MovieDbContext>();
             var movieService = services.GetRequiredService<IMovieService>();
+            var environment = services.GetRequiredService<IWebHostEnvironment>();
 
-            // Ensure database is created and migrations are applied
+            // Ensure database is created
             await context.Database.EnsureCreatedAsync();
 
             // FIRST: Always populate JSON fields for ALL existing movies
-            await PopulateJsonFieldsForExistingMovies(context);
+            await PopulateJsonFieldsForExistingMovies(context, environment);
 
             // THEN: Only seed from JSON if database is completely empty
             if (!context.Movies.Any())
             {
-                await SeedMoviesFromJson(context, movieService);
+                await SeedMoviesFromJson(context, movieService, environment);
             }
 
             await context.SaveChangesAsync();
         }
 
-        private static async Task PopulateJsonFieldsForExistingMovies(MovieDbContext context)
+        private static async Task PopulateJsonFieldsForExistingMovies(MovieDbContext context, IWebHostEnvironment environment)
         {
             // Get all movies with their relationships
             var movies = await context.Movies
@@ -45,7 +47,7 @@ namespace Live_Movies.Data
             {
                 bool updated = false;
 
-                // For movies with relationships (like IDs 37, 39), populate from relationships
+                // For movies with relationships, populate from relationships
                 if (movie.MovieGenres.Any())
                 {
                     var genres = movie.MovieGenres.Select(mg => mg.Genre.Name).ToList();
@@ -70,12 +72,12 @@ namespace Live_Movies.Data
                     }
                 }
 
-                // For movies without relationships (IDs 1-34), we need to get data from seriesData.json
+                // For movies without relationships, get data from seriesData.json
                 if (!movie.MovieGenres.Any() && !movie.MovieCasts.Any() &&
                     (string.IsNullOrEmpty(movie.GenreJson) || movie.GenreJson == "[]"))
                 {
                     // Get genre and cast data from the JSON file
-                    var jsonData = await GetMovieDataFromJsonFile(movie.Name);
+                    var jsonData = await GetMovieDataFromJsonFile(movie.Name, environment);
                     if (jsonData != null)
                     {
                         movie.GenreJson = JsonSerializer.Serialize(jsonData.Genre ?? new List<string>());
@@ -102,15 +104,19 @@ namespace Live_Movies.Data
             }
         }
 
-        private static async Task<MovieJsonDto?> GetMovieDataFromJsonFile(string movieName)
+        private static async Task<MovieJsonDto?> GetMovieDataFromJsonFile(string movieName, IWebHostEnvironment environment)
         {
             try
             {
-                var jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "seriesData.json");
+                var jsonFilePath = Path.Combine(environment.ContentRootPath, "Data", "seriesData.json");
                 if (!File.Exists(jsonFilePath))
                 {
-                    jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "api", "seriesData.json");
-                    if (!File.Exists(jsonFilePath)) return null;
+                    jsonFilePath = Path.Combine(environment.ContentRootPath, "api", "seriesData.json");
+                    if (!File.Exists(jsonFilePath)) 
+                    {
+                        Console.WriteLine("JSON file not found in production");
+                        return null;
+                    }
                 }
 
                 var jsonData = await File.ReadAllTextAsync(jsonFilePath);
@@ -122,23 +128,24 @@ namespace Live_Movies.Data
                 return moviesFromJson?.FirstOrDefault(m =>
                     m.Name.Equals(movieName, StringComparison.OrdinalIgnoreCase));
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Error reading JSON file in production: {ex.Message}");
                 return null;
             }
         }
 
-        private static async Task SeedMoviesFromJson(MovieDbContext context, IMovieService movieService)
+        private static async Task SeedMoviesFromJson(MovieDbContext context, IMovieService movieService, IWebHostEnvironment environment)
         {
             try
             {
-                var jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "seriesData.json");
+                var jsonFilePath = Path.Combine(environment.ContentRootPath, "Data", "seriesData.json");
                 if (!File.Exists(jsonFilePath))
                 {
-                    jsonFilePath = Path.Combine(Directory.GetCurrentDirectory(), "api", "seriesData.json");
+                    jsonFilePath = Path.Combine(environment.ContentRootPath, "api", "seriesData.json");
                     if (!File.Exists(jsonFilePath))
                     {
-                        Console.WriteLine("JSON File not found.");
+                        Console.WriteLine("JSON File not found in production.");
                         return;
                     }
                 }
@@ -161,21 +168,25 @@ namespace Live_Movies.Data
                 {
                     try
                     {
-                        var movie = new Movie
+                        // Check if movie already exists
+                        if (!context.Movies.Any(m => m.Name == movieJson.Name))
                         {
-                            Name = movieJson.Name,
-                            Release_Year = movieJson.Release_Year,
-                            Language = movieJson.Language,
-                            Rating = movieJson.Rating,
-                            Description = movieJson.Description,
-                            Image_url = movieJson.Image_url,
-                            Watch_url = movieJson.Watch_url,
-                            GenreJson = JsonSerializer.Serialize(movieJson.Genre ?? new List<string>()),
-                            CastJson = JsonSerializer.Serialize(movieJson.Cast ?? new List<string>())
-                        };
+                            var movie = new Movie
+                            {
+                                Name = movieJson.Name,
+                                Release_Year = movieJson.Release_Year,
+                                Language = movieJson.Language,
+                                Rating = movieJson.Rating,
+                                Description = movieJson.Description,
+                                Image_url = movieJson.Image_url,
+                                Watch_url = movieJson.Watch_url,
+                                GenreJson = JsonSerializer.Serialize(movieJson.Genre ?? new List<string>()),
+                                CastJson = JsonSerializer.Serialize(movieJson.Cast ?? new List<string>())
+                            };
 
-                        context.Movies.Add(movie);
-                        Console.WriteLine($"Added Movie: {movieJson.Name}");
+                            context.Movies.Add(movie);
+                            Console.WriteLine($"Added Movie: {movieJson.Name}");
+                        }
                     }
                     catch (Exception ex)
                     {
