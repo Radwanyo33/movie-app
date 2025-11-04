@@ -198,8 +198,8 @@ using (var scope = app.Services.CreateScope())
         // Try to seed data - continue even if it fails
         try 
         {
-            // await SeedData.Initialize(services);  // Keep this commented for now
-            Console.WriteLine("Database seeding temporarily disabled.");
+            await SeedData.Initialize(services);  // Keep this commented for now
+            Console.WriteLine("Database seeding Completed.");
         }
         catch (Exception seedEx)
         {
