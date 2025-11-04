@@ -107,7 +107,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-clamp: 2
+  line-clamp: 2;
 }
 
 .card-content p {
@@ -145,11 +145,35 @@
   box-shadow: 0 4px 12px rgba(255, 204, 0, 0.4);
 }
 
-/* Mobile Responsive Styles */
-@media (max-width: 1024px) {
+/* === LAPTOP RESPONSIVENESS (1024px - 1440px) === */
+@media (max-width: 1440px) {
+  .movies-item {
+    min-height: 620px;
+    margin: 8px;
+    margin-bottom: 18px;
+  }
+  
+  .image-container {
+    height: 320px;
+  }
+  
+  .card-content {
+    padding: 18px;
+  }
+  
+  .card-content h2 {
+    font-size: 1.35rem;
+  }
+  
+  .card-content p {
+    font-size: 0.92rem;
+  }
+}
+
+@media (max-width: 1280px) {
   .movies-item {
     min-height: 600px;
-    margin: 8px;
+    margin: 7px;
     margin-bottom: 16px;
   }
   
@@ -159,49 +183,103 @@
   
   .card-content {
     padding: 16px;
+    gap: 0.45rem;
   }
   
   .card-content h2 {
     font-size: 1.3rem;
+    margin-bottom: 10px;
+  }
+  
+  .card-content p {
+    font-size: 0.9rem;
+  }
+  
+  .button {
+    padding: 11px;
+    font-size: 0.95rem;
   }
 }
 
+/* === TABLET RESPONSIVENESS === */
+@media (max-width: 1024px) {
+  .movies-item {
+    min-height: 580px;
+    margin: 6px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+  }
+  
+  .image-container {
+    height: 280px;
+    border-radius: 10px 10px 0 0;
+  }
+  
+  .card-content {
+    padding: 14px;
+    gap: 0.4rem;
+  }
+  
+  .card-content h2 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+  }
+  
+  .card-content p {
+    font-size: 0.88rem;
+  }
+  
+  .button-container {
+    padding: 0 14px 14px;
+  }
+  
+  .button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Small Tablet & Large Mobile */
 @media (max-width: 768px) {
   .movies-item {
-    min-height: 550px;
-    margin: 6px;
+    min-height: 520px;
+    margin: 5px;
     margin-bottom: 12px;
-    border-radius: 10px;
+    border-radius: 8px;
   }
   
   .admin-controls {
     top: 8px;
     right: 8px;
+    flex-direction: column;
+    gap: 6px;
   }
   
   .edit-button, .delete-button {
     padding: 6px 10px;
-    font-size: 0.7rem;
-    min-width: 50px;
+    font-size: 0.75rem;
+    min-width: 55px;
+    border-radius: 4px;
   }
   
   .image-container {
-    height: 250px;
-    border-radius: 10px 10px 0 0;
+    height: 220px;
+    border-radius: 8px 8px 0 0;
   }
   
   .card-content {
     padding: 12px;
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
   
   .card-content h2 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     margin-bottom: 8px;
   }
   
   .card-content p {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    line-height: 1.3;
   }
   
   .button-container {
@@ -211,37 +289,40 @@
   .button {
     padding: 10px;
     font-size: 0.9rem;
+    border-radius: 6px;
   }
 }
 
+/* Mobile Phones */
 @media (max-width: 480px) {
   .movies-item {
-    min-height: 500px;
+    min-height: 480px;
     margin: 4px;
     margin-bottom: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
   }
   
   .admin-controls {
     top: 6px;
     right: 6px;
-    gap: 6px;
+    gap: 4px;
   }
   
   .edit-button, .delete-button {
     padding: 5px 8px;
-    font-size: 0.65rem;
-    min-width: 45px;
+    font-size: 0.7rem;
+    min-width: 50px;
+    border-radius: 3px;
   }
   
   .image-container {
-    height: 200px;
-    border-radius: 8px 8px 0 0;
+    height: 180px;
+    border-radius: 6px 6px 0 0;
   }
   
   .card-content {
     padding: 10px;
-    gap: 0.3rem;
+    gap: 0.25rem;
   }
   
   .card-content h2 {
@@ -250,8 +331,8 @@
   }
   
   .card-content p {
-    font-size: 0.85rem;
-    line-height: 1.3;
+    font-size: 0.8rem;
+    line-height: 1.2;
   }
   
   .button-container {
@@ -261,6 +342,50 @@
   .button {
     padding: 8px;
     font-size: 0.85rem;
+    border-radius: 4px;
+  }
+}
+
+/* Extra Small Mobile Devices */
+@media (max-width: 360px) {
+  .movies-item {
+    min-height: 450px;
+    margin: 2px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+  }
+  
+  .admin-controls {
+    top: 4px;
+    right: 4px;
+  }
+  
+  .edit-button, .delete-button {
+    padding: 4px 6px;
+    font-size: 0.65rem;
+    min-width: 45px;
+  }
+  
+  .image-container {
+    height: 160px;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .card-content {
+    padding: 8px;
+  }
+  
+  .card-content h2 {
+    font-size: 1rem;
+  }
+  
+  .card-content p {
+    font-size: 0.75rem;
+  }
+  
+  .button {
+    padding: 6px;
+    font-size: 0.8rem;
   }
 }
 
@@ -280,4 +405,44 @@
   border: 1px solid #ff4444;
   border-radius: 5px;
   margin: 1rem;
+}
+
+/* Responsive text for loading/error messages */
+@media (max-width: 1024px) {
+  .loading-message {
+    padding: 1.8rem;
+    font-size: 1.15rem;
+  }
+  
+  .error-message {
+    padding: 0.9rem;
+    font-size: 0.95rem;
+    margin: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .loading-message {
+    padding: 1.5rem;
+    font-size: 1.1rem;
+  }
+  
+  .error-message {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+    margin: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .loading-message {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .error-message {
+    padding: 0.6rem;
+    font-size: 0.85rem;
+    margin: 0.6rem;
+  }
 }
