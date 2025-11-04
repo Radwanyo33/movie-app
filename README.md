@@ -12,8 +12,11 @@ Full-stack movie application with React frontend and ASP.NET Core backend.
 ## Tech Stack
 - Frontend: React, CSS
 - Backend: ASP.NET Core, Entity Framework Core
-- Database: SQL Server
+- Database: MSSQL Server, POstgre Render SQL Server
 
 ## Deployment
-- Frontend: GitHub Pages/Vercel/Render
-- Backend: Heroku/Railway/Render
+- Frontend: Render
+- Backend: Render
+
+## Live Server
+- Website: https://livemovies.onrender.com/
