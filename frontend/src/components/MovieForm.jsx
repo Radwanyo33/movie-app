@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './MovieForm.css';
+import { movieApi } from '../services/movieApi';
 
 const MovieForm = ({ isOpen, onClose, onMovieAdded }) => {
 const [formData, setFormData] = useState({
@@ -22,34 +23,54 @@ const [imagePreview, setImagePreview] = useState('');
 const [uploadingImage, setUploadingImage] = useState(false);
 
 // Image upload function
+// const handleImageUpload = async (file) => {
+//   setUploadingImage(true);
+//   try {
+//     const formData = new FormData();
+//     formData.append('file', file);
+//       const response = await fetch('http://localhost:5000/api/upload/image', {
+//         method: 'POST',
+//         body: formData,
+//       });
+
+//       const result = await response.json();
+      
+//       if (result.success) {
+//         setFormData(prev => ({
+//           ...prev,
+//           Image_url: result.imagePath
+//         }));
+//         return { success: true };
+//       } else {
+//         return { success: false, message: result.message };
+//       }
+//   } catch (error) {
+//     return { success: false, message: 'Image upload failed' };
+//   } finally {
+//     setUploadingImage(false);
+//   }
+// };
 const handleImageUpload = async (file) => {
-setUploadingImage(true);
-try {
-const formData = new FormData();
-formData.append('file', file);
-  const response = await fetch('http://localhost:5000/api/upload/image', {
-    method: 'POST',
-    body: formData,
-  });
-
-  const result = await response.json();
-  
-  if (result.success) {
-    setFormData(prev => ({
-      ...prev,
-      Image_url: result.imagePath
-    }));
-    return { success: true };
-  } else {
-    return { success: false, message: result.message };
+  setUploadingImage(true);
+  try {
+    // Use the movieApi service instead of hardcoded URL
+    const result = await movieApi.uploadImage(file);
+    
+    if (result.imagePath) {
+      setFormData(prev => ({
+        ...prev,
+        Image_url: result.imagePath
+      }));
+      return { success: true };
+    } else {
+      return { success: false, message: result.message || 'Upload failed' };
+    }
+  } catch (error) {
+    return { success: false, message: error.message || 'Image upload failed' };
+  } finally {
+    setUploadingImage(false);
   }
-} catch (error) {
-  return { success: false, message: 'Image upload failed' };
-} finally {
-  setUploadingImage(false);
-}
 };
-
 const handleImageChange = (e) => {
 const file = e.target.files[0];
 if (file) {

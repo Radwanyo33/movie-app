@@ -1,5 +1,6 @@
 import { getImageUrl } from '../services/movieApi'; 
 import { useState } from 'react';
+import { movieApi } from '../services/movieApi';
 
 export const MoviesCards = ({ data, isAdmin, onEdit, onDelete }) => {
     const {
@@ -26,26 +27,23 @@ export const MoviesCards = ({ data, isAdmin, onEdit, onDelete }) => {
         console.log('Deleting movie ID:', id);
         
         try {
-            // Use direct URL instead of movieApi service
-            const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'
-            });
+            // Use movieApi service instead of hardcoded URL
+            const result = await movieApi.deleteMovie(id);
 
-            console.log('Delete response status:', response.status);
+            console.log('Delete response:', result);
             
-            if (response.ok) {
+            // Check for success in both response formats
+            if (result.success || result.message === 'Movie deleted successfully') {
                 console.log('Delete successful, calling onDelete callback');
                 // Notify parent to update the state
                 onDelete(id);
             } else {
-                const errorData = await response.json();
-                console.error('Delete failed:', errorData);
-                alert(errorData.message || 'Failed to delete movie');
+                console.error('Delete failed:', result);
+                alert(result.message || 'Failed to delete movie');
             }
         } catch (error) {
             console.error('Delete error:', error);
-            alert('Network error. Please try again.');
+            alert(error.message || 'Network error. Please try again.');
         } finally {
             setIsDeleting(false);
         }
