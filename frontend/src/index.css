@@ -30,7 +30,7 @@ min-width: 320px;
 min-height: 100vh;
 background:
 linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), /* Opacity layer */
-url('/assets/background.jpg');
+url('/assets/background.png');
 }
 
 h1 {
