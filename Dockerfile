@@ -30,9 +30,16 @@ COPY --from=frontend-build /app/dist ./wwwroot
 RUN mkdir -p /app/uploads/movies
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
+# Create a startup script
+RUN echo '#!/bin/bash' > /app/startup.sh && \
+    echo 'echo "Starting application..."' >> /app/startup.sh && \
+    echo 'exec dotnet "Live Movies.dll"' >> /app/startup.sh && \
+    chmod +x /app/startup.sh
+
 ENV ASPNETCORE_URLS=http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-CMD ["dotnet", "Live Movies.dll"]
+# Use the startup script
+ENTRYPOINT ["/app/startup.sh"]
