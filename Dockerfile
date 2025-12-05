@@ -20,25 +20,22 @@ COPY backend/ ./
 RUN dotnet build "Live Movies.csproj" -c Release -o /app/build
 RUN dotnet publish "Live Movies.csproj" -c Release -o /app/publish
 
-# Final Runtime - Use the official .NET runtime image
-FROM mcr.microsoft.com/dotnet/runtime:9.0
-WORKDIR /app
+# Final Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 
-# Install ASP.NET Core runtime
-RUN apt-get update && \
-    apt-get install -y aspnetcore-runtime-9.0 && \
-    apt-get install -y postgresql-client && \
-    rm -rf /var/lib/apt/lists/*
+# Set working directory
+WORKDIR /app
 
 COPY --from=backend-build /app/publish .
 COPY --from=frontend-build /app/dist ./wwwroot
 
 RUN mkdir -p /app/uploads/movies
+RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
 ENV ASPNETCORE_URLS=http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-# Simple entry point
-ENTRYPOINT ["dotnet", "Live Movies.dll"]
+# Direct exec form - Railway should respect this
+CMD ["dotnet", "Live Movies.dll"]
