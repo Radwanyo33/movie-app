@@ -1,5 +1,5 @@
-# Build React Frontend
-FROM node:20-alpine AS frontend-build
+# Build React Frontend - USE REGULAR NODE
+FROM node:20 AS frontend-build
 WORKDIR /app
 
 # Copy frontend files
@@ -16,7 +16,7 @@ RUN npm run build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
 WORKDIR /src
 
-# Copy backend project file (handle space in filename)
+# Copy backend project file
 COPY ["backend/Live Movies.csproj", "."]
 RUN dotnet restore "Live Movies.csproj"
 
