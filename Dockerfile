@@ -3,10 +3,10 @@ FROM node:20-alpine AS frontend-build
 WORKDIR /app
 
 # Copy frontend files
-COPY package*.json ./
-COPY vite.config.js ./
-COPY index.html ./
-COPY src/ ./src/
+COPY frontend/package*.json ./
+COPY frontend/vite.config.js ./
+COPY frontend/index.html ./
+COPY frontend/src/ ./src/
 
 # Install dependencies and build
 RUN npm ci
@@ -16,15 +16,15 @@ RUN npm run build
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
 WORKDIR /src
 
-# Copy backend files
-COPY ["Live Movies.csproj", "."]
+# Copy backend project file (handle space in filename)
+COPY ["backend/Live Movies.csproj", "."]
 RUN dotnet restore "Live Movies.csproj"
-COPY . .
-RUN dotnet build "Live Movies.csproj" -c Release -o /app/build
 
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS publish
-WORKDIR /src
-COPY . .
+# Copy all backend files
+COPY backend/ ./
+
+# Build .NET
+RUN dotnet build "Live Movies.csproj" -c Release -o /app/build
 RUN dotnet publish "Live Movies.csproj" -c Release -o /app/publish
 
 # Final Runtime Image
@@ -32,8 +32,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
 # Copy backend
-COPY --from=publish /app/publish .
-# Copy frontend build to wwwroot (for serving React)
+COPY --from=backend-build /app/publish .
+# Copy frontend build
 COPY --from=frontend-build /app/dist ./wwwroot
 
 # Create uploads directory
