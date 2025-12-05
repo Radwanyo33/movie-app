@@ -20,26 +20,25 @@ COPY backend/ ./
 RUN dotnet build "Live Movies.csproj" -c Release -o /app/build
 RUN dotnet publish "Live Movies.csproj" -c Release -o /app/publish
 
-# Final Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+# Final Runtime - Use the official .NET runtime image
+FROM mcr.microsoft.com/dotnet/runtime:9.0
 WORKDIR /app
+
+# Install ASP.NET Core runtime
+RUN apt-get update && \
+    apt-get install -y aspnetcore-runtime-9.0 && \
+    apt-get install -y postgresql-client && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=backend-build /app/publish .
 COPY --from=frontend-build /app/dist ./wwwroot
 
 RUN mkdir -p /app/uploads/movies
-RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
-
-# Create a startup script
-RUN echo '#!/bin/bash' > /app/startup.sh && \
-    echo 'echo "Starting application..."' >> /app/startup.sh && \
-    echo 'exec dotnet "Live Movies.dll"' >> /app/startup.sh && \
-    chmod +x /app/startup.sh
 
 ENV ASPNETCORE_URLS=http://*:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-# Use the startup script
-ENTRYPOINT ["/app/startup.sh"]
+# Simple entry point
+ENTRYPOINT ["dotnet", "Live Movies.dll"]
