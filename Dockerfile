@@ -1,15 +1,21 @@
-# Build React Frontend - USE REGULAR NODE
+# Build React Frontend
 FROM node:20 AS frontend-build
 WORKDIR /app
 
-# Copy frontend files
+# Copy package files first
 COPY frontend/package*.json ./
 COPY frontend/vite.config.js ./
+
+# Clean install to fix npm bug
+RUN rm -rf node_modules package-lock.json && \
+    npm cache clean --force && \
+    npm install --legacy-peer-deps --no-optional
+
+# Copy source files
 COPY frontend/index.html ./
 COPY frontend/src/ ./src/
 
-# Install dependencies and build
-RUN npm ci
+# Build
 RUN npm run build
 
 # Build .NET Backend
