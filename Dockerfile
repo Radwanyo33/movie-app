@@ -2,21 +2,18 @@
 FROM node:20 AS frontend-build
 WORKDIR /app
 
-# Copy package files first
+# Copy frontend files
 COPY frontend/package*.json ./
 COPY frontend/vite.config.js ./
-
-# Clean install to fix npm bug
-RUN rm -rf node_modules package-lock.json && \
-    npm cache clean --force && \
-    npm install --legacy-peer-deps --no-optional
-
-# Copy source files
 COPY frontend/index.html ./
 COPY frontend/src/ ./src/
 
-# Build
-RUN npm run build
+# Fix: Install missing Rollup platform package
+RUN npm config set fund false && \
+    npm config set audit false && \
+    npm ci --no-optional --legacy-peer-deps && \
+    npx rollup --version 2>/dev/null || npm install rollup@4.52.4 --no-save && \
+    npm run build
 
 # Build .NET Backend
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS backend-build
