@@ -44,62 +44,32 @@ builder.Services.AddSwaggerGen();
 // Database Configuration
 if (builder.Environment.IsProduction())
 {
-    // Use PostgreSQL in production (Railway provides these env vars)
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    // PostgreSQL for production (Railway)
+    var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
     
-    // Fallback for Railway's default PostgreSQL connection
-    if (string.IsNullOrEmpty(connectionString))
+    if (string.IsNullOrEmpty(databaseUrl))
     {
-        // Railway provides these environment variables
-        var pgHost = Environment.GetEnvironmentVariable("PGHOST");
-        var pgPort = Environment.GetEnvironmentVariable("PGPORT");
-        var pgDatabase = Environment.GetEnvironmentVariable("PGDATABASE");
-        var pgUser = Environment.GetEnvironmentVariable("PGUSER");
-        var pgPassword = Environment.GetEnvironmentVariable("PGPASSWORD");
-        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
-        
-        if (!string.IsNullOrEmpty(databaseUrl))
-        {
-            // Parse DATABASE_URL format: postgresql://user:pass@host:port/db
-            connectionString = databaseUrl.Replace("postgresql://", "");
-            var parts = connectionString.Split('@');
-            if (parts.Length == 2)
-            {
-                var credentials = parts[0].Split(':');
-                var hostAndDb = parts[1].Split('/');
-                var hostAndPort = hostAndDb[0].Split(':');
-                
-                connectionString = $"Host={hostAndPort[0]};Port={hostAndPort[1]};Database={hostAndDb[1]};Username={credentials[0]};Password={credentials[1]};SSL Mode=Require;Trust Server Certificate=true";
-            }
-        }
-        else if (!string.IsNullOrEmpty(pgHost))
-        {
-            connectionString = $"Host={pgHost};Port={pgPort};Database={pgDatabase};Username={pgUser};Password={pgPassword};SSL Mode=Require;Trust Server Certificate=true";
-        }
+        throw new InvalidOperationException("DATABASE_URL not found. Add PostgreSQL database in Railway.");
     }
     
+    // Parse the DATABASE_URL
+    var uri = new Uri(databaseUrl);
+    var db = uri.AbsolutePath.Trim('/');
+    var user = uri.UserInfo.Split(':')[0];
+    var passwd = uri.UserInfo.Split(':')[1];
+    var port = uri.Port > 0 ? uri.Port : 5432;
+    
+    var connectionString = $"Host={uri.Host};Port={port};Database={db};Username={user};Password={passwd};SSL Mode=Require;Trust Server Certificate=true";
+    
     builder.Services.AddDbContext<MovieDbContext>(options =>
-        options.UseNpgsql(connectionString, npgOptions =>
-        {
-            npgOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorCodesToAdd: null
-            );
-            npgOptions.SetPostgresVersion(new Version(13, 0)); // Railway uses PostgreSQL 13+
-        }));
+        options.UseNpgsql(connectionString));
 }
 else
 {
-    // Use SQL Server in development
+    // SQL Server for development
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    builder.Services.AddDbContext<MovieDbContext>(options => options.UseSqlServer(connectionString, sqlOptions =>
-    {
-        sqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 5,
-            maxRetryDelay: TimeSpan.FromSeconds(30),
-            errorNumbersToAdd: null);
-    }));
+    builder.Services.AddDbContext<MovieDbContext>(options => 
+        options.UseSqlServer(connectionString));
 }
 
 // Register Services
