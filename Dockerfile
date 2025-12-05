@@ -22,8 +22,6 @@ RUN dotnet publish "Live Movies.csproj" -c Release -o /app/publish
 
 # Final Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
-
-# Set working directory
 WORKDIR /app
 
 COPY --from=backend-build /app/publish .
@@ -32,10 +30,10 @@ COPY --from=frontend-build /app/dist ./wwwroot
 RUN mkdir -p /app/uploads/movies
 RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
 
-ENV ASPNETCORE_URLS=http://*:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
+# Only set if not already set by Railway
+ENV ASPNETCORE_URLS=${ASPNETCORE_URLS:-http://*:8080}
+ENV ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT:-Production}
 
 EXPOSE 8080
 
-# Direct exec form - Railway should respect this
-CMD ["dotnet", "Live Movies.dll"]
+ENTRYPOINT ["dotnet", "Live Movies.dll"]
