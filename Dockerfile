@@ -51,4 +51,5 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-ENTRYPOINT ["dotnet", "Live Movies.dll"]
+# Use CMD instead of ENTRYPOINT
+CMD ["dotnet", "Live Movies.dll"]
