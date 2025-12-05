@@ -7,7 +7,7 @@ COPY frontend/vite.config.js ./
 COPY frontend/index.html ./
 COPY frontend/src/ ./src/
 
-RUN npm ci --no-optional --legacy-peer-deps
+RUN npm install
 RUN npm run build
 
 # Build .NET Backend
@@ -35,5 +35,4 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 EXPOSE 8080
 
-# Simple shell execution
-CMD ["sh", "-c", "dotnet \"Live Movies.dll\""]
+CMD ["dotnet", "Live Movies.dll"]
